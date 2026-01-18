@@ -17,8 +17,11 @@ consumer = KafkaConsumer(
 )
 
 for msg in consumer:
-    event = msg.value
-    if event["event_type"] == "order_created":
-        logger.info(event)
-    elif event["event_type"] == "order_cancelled":
-        logger.info(event)
+    logger.info(
+        "Consumed message topic=%s partition=%s offset=%s payload=%s",
+        msg.topic,
+        msg.partition,
+        msg.offset,
+        msg.value,
+    )
+
