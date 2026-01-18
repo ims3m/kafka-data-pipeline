@@ -5,6 +5,11 @@ import logging
 from faker import Faker
 from kafka import KafkaProducer
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
+)
+
 logger = logging.getLogger(__name__)
 
 fake = Faker()
@@ -48,3 +53,4 @@ while True:
 
     producer.flush()
     time.sleep(2)
+
