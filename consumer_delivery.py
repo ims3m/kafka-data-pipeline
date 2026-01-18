@@ -17,5 +17,10 @@ consumer = KafkaConsumer(
 )
 
 for msg in consumer:
-    event = msg.value
-    logger.info(event)
+    logger.info(
+        "Consumed message topic=%s partition=%s offset=%s payload=%s",
+        msg.topic,
+        msg.partition,
+        msg.offset,
+        msg.value,
+    )
