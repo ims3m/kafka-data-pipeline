@@ -1,25 +1,43 @@
 #!/bin/bash
 set -e
 
-echo "STARTING KAFKA..."
+log_info() {
+  echo "$(date '+%Y-%m-%d %H:%M:%S') [INFO] $1"
+}
+
+log_warn() {
+  echo "$(date '+%Y-%m-%d %H:%M:%S') [WARN] $1"
+}
+
+log_error() {
+  echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] $1"
+}
+
 docker compose up -d
 
 sleep 10
 
-echo "CREATING TOPIC..."
 docker exec kafka kafka-topics \
-  --bootstrap-server localhost:9092 \
+  --bootstrap-server kafka:9092 \
   --create \
   --if-not-exists \
-  --topic input-topic \
+  --topic food-orders-topic \
   --partitions 1 \
   --replication-factor 1
 
-echo "STARTING CONSUMER..."
-python consumer.py &
+docker exec kafka kafka-topics \
+  --bootstrap-server kafka:9092 \
+  --create \
+  --if-not-exists \
+  --topic delivery-status-topic \
+  --partitions 1 \
+  --replication-factor 1
 
-sleep 2
-
-echo "STARTING PRODUCER..."
 python producer.py
+
+sleep 10
+
+python consumer_order.py &
+python consumer_delivery.py &
+
 wait
