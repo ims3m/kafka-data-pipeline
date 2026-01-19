@@ -18,7 +18,7 @@ docker compose up -d
 sleep 10
 
 docker exec kafka kafka-topics \
-  --bootstrap-server kafka:9092 \
+  --bootstrap-server localhost:9092 \
   --create \
   --if-not-exists \
   --topic food-orders-topic \
@@ -26,16 +26,16 @@ docker exec kafka kafka-topics \
   --replication-factor 1
 
 docker exec kafka kafka-topics \
-  --bootstrap-server kafka:9092 \
+  --bootstrap-server localhost:9092 \
   --create \
   --if-not-exists \
   --topic delivery-status-topic \
   --partitions 1 \
   --replication-factor 1
 
-python producer.py
+python producer.py &
 
-sleep 10
+sleep 2
 
 python consumer_order.py &
 python consumer_delivery.py &
