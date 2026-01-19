@@ -13,15 +13,20 @@ consumer = KafkaConsumer(
     "food-orders-topic",
     bootstrap_servers="localhost:9092",
     auto_offset_reset="earliest",
+    group_id="food-order-v1",
     value_deserializer=lambda v: json.loads(v.decode("utf-8")),
 )
 
-for msg in consumer:
-    logger.info(
-        "Consumed message topic=%s partition=%s offset=%s payload=%s",
-        msg.topic,
-        msg.partition,
-        msg.offset,
-        msg.value,
-    )
-
+try:
+    for msg in consumer:
+        logger.info(
+            "Recieved message: topic=%s partition=%s offset=%s payload=%s",
+            msg.topic,
+            msg.partition,
+            msg.offset,
+            msg.value,
+        )
+except Exception as e:
+    logger.error(f"An exception occurred: {e}")
+finally:
+    consumer.close()
